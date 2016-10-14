@@ -1,0 +1,157 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" import="java.util.*"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Heatmap</title>
+</head>
+<style>
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 10px;
+        border: 1px solid black;
+      }
+     header {
+        background-color:black;
+        color:white;
+        text-align:center;
+        padding:5px;
+    }
+    nav {
+        line-height:30px;
+        background-color:#eeeeee;
+        height:80%;
+        width:20%;
+        float:left;
+        padding:5px;
+    }
+    .section {
+        height:80%
+        width:80%;
+        padding:10px;
+    }
+    footer {
+        background-color:black;
+        color:white;
+        clear:both;
+        text-align:center;
+        padding:5px;    
+    }
+    #map{
+    height:80%;
+    }
+      #floating-panel {
+        position: absolute;
+        top: 10px;
+        left: 25%;
+        z-index: 5;
+        background-color: #fff;
+        padding: 5px;
+        border: 1px solid #999;
+        text-align: center;
+        font-family: 'Roboto','sans-serif';
+        line-height: 30px;
+        padding-left: 10px;
+      }
+      #floating-panel {
+        background-color: #fff;
+        border: 1px solid #999;
+        left: 25%;
+        padding: 5px;
+        position: absolute;
+        top: 10px;
+        z-index: 5;
+      }
+    </style>
+  </head>
+     
+  <body>
+      <header>
+          <h1>Twitter Hashtag Analyzer</h1>
+      </header>
+    <nav>
+    <h>Hashtag search:</h>
+    <form id="form3" action="getlocations.getlocas" method="post">
+ 	  <input  type="text" name="hashtag" value="">
+ 	  <input type="submit" value="search">
+	</form>	
+    <a href="https://twitter.com/hashtag/<%=request.getAttribute("hashtags")%>">--popular hashtag:<%=request.getAttribute("hashtags")%></a>
+    <br><a href="http://localhost:8080/twittermap2/index.jsp">--return</a>
+    </nav>
+    <div id="floating-panel">
+      <button onclick="toggleHeatmap()">Toggle Heatmap</button>
+      <button onclick="changeGradient()">Change gradient</button>
+      <button onclick="changeRadius()">Change radius</button>
+      <button onclick="changeOpacity()">Change opacity</button>
+    </div>
+    <div id="map" class="section"></div>
+    <footer>
+        Copyright  by  Liuqing_Yang
+    </footer>
+
+<script type="text/javascript">
+var map,heatmap;
+	function initMap(){
+		  map = new google.maps.Map(document.getElementById('map'), {
+		    zoom: 4,
+		    center: {lat: 39.068832, lng: -98.511872},
+		    mapTypeId: google.maps.MapTypeId.MAP
+		  });
+		 heatmap = new google.maps.visualization.HeatmapLayer({data: getPoints(),map: map});
+	}
+	function toggleHeatmap() {
+        heatmap.setMap(heatmap.getMap() ? null : map);
+      }
+
+      function changeGradient() {
+        var gradient = [
+          'rgba(0, 255, 255, 0)',
+          'rgba(0, 255, 255, 1)',
+          'rgba(0, 191, 255, 1)',
+          'rgba(0, 127, 255, 1)',
+          'rgba(0, 63, 255, 1)',
+          'rgba(0, 0, 255, 1)',
+          'rgba(0, 0, 223, 1)',
+          'rgba(0, 0, 191, 1)',
+          'rgba(0, 0, 159, 1)',
+          'rgba(0, 0, 127, 1)',
+          'rgba(63, 0, 91, 1)',
+          'rgba(127, 0, 63, 1)',
+          'rgba(191, 0, 31, 1)',
+          'rgba(255, 0, 0, 1)'
+        ]
+        heatmap.set('gradient', heatmap.get('gradient') ? null : gradient);
+      }
+
+      function changeRadius() {
+        heatmap.set('radius', heatmap.get('radius') ? null : 20);
+      }
+
+      function changeOpacity() {
+        heatmap.set('opacity', heatmap.get('opacity') ? null : 0.2);
+      }
+
+	function getPoints() {
+		var points=[];
+		<%
+		  // this is Java, run when the page is generated
+		  ArrayList<String> geos= (ArrayList<String>)request.getAttribute("locations"); 
+		  for (String g:geos)
+		  {
+		%>
+			<% String[] geo=g.substring(1).split(" ");%>
+			points.push(new google.maps.LatLng(<%=Double.parseDouble(geo[0])%>,<%=Double.parseDouble(geo[1])%>));
+		<%
+		  }
+		%>
+
+	    return points;
+	    }
+</script>
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBaIANGzsDAXutlxPbRKg24Q6Av89sfEWw&signed_in=true&libraries=visualization&callback=initMap">
+</script>
+</body>
+</html>

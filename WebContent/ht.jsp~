@@ -1,0 +1,31 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>ht</title>
+</head>
+<body onload="hts('<%=request.getAttribute("hashtags")%>')">
+<form id="form2" action="getlocations.getlocas" method="post">
+ 	  <input  type="hidden" id="002" name="hashtag" value="">
+	</form>	
+<div id="subblock"></div>
+</body>
+<script>
+function hts(hashtags){
+	var temp=[];	
+	var st=<%=request.getAttribute("statename")%>;
+	temp.push('<h>'+st+'</h>');
+	var hash=hashtags.split("_");
+        for ( i=0;i<5;i++){
+            temp.push('<br><button onclick="submitform(0,"'+hash[i]+'")">'+(i+1).toString()+'.'+hash[i]+'</button>');
+        document.getElementById("subblock").innerHTML=temp;
+        }
+}
+function submitform(hashtag){
+	document.getElementById("002").value=hashtag;
+	document.getElementById("form2").submit();
+}
+</script>
+</html>

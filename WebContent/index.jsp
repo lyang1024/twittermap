@@ -1,0 +1,268 @@
+<%@ page language="java" import="java.util.*" pageEncoding="GBK"%>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+
+%>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <base href="<%=basePath%>">
+    
+    <title>search for hashtag</title>
+    
+	<meta http-equiv="pragma" content="no-cache">
+	<meta http-equiv="cache-control" content="no-cache">
+	<meta http-equiv="expires" content="0">    
+	<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+	<meta http-equiv="description" content="This is my page">
+	<!--
+	<link rel="stylesheet" type="text/css" href="styles.css">
+	-->
+
+    <style>
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 10px;
+        border: 1px solid black;
+      }
+      #map {
+        height: 80%;
+      }
+    header {
+        background-color:black;
+        color:white;
+        text-align:center;
+        padding:5px;
+    }
+    nav {
+        line-height:30px;
+        background-color:#eeeeee;
+        height:80%;
+        width:20%;
+        float:left;
+        padding:5px;
+    }
+    .section {
+        height:80%
+        width:80%;
+        padding:10px;
+    }
+    footer {
+        background-color:black;
+        color:white;
+        clear:both;
+        text-align:center;
+        padding:5px;    
+    }
+
+
+    </style>
+    <title>dropdown-menu</title>
+    <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+            <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+                <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+                <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+  </head>
+
+  <body>
+      <header>
+          <h1>Twitter Hashtag Analyzer</h1>
+      </header>
+    
+      <nav>
+          <%--<button onclick="initMap(2);sub(1)">Popular Hashtag Around You</button><br>--%>
+          <h>Top 5 Popular Hashtags per State</h><br>
+          <div class="btn-group">
+              <button type="button" class="btn btn-primary">State</button>
+              <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                  <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu" role="menu">
+                  <li onclick="sub(0,'AL')">AL</li>
+                  <li onclick="sub(0,'AZ')">AZ</li>
+                  <li onclick="sub(0,'AR')">AR</li>
+                  <li onclick="sub(0,'CA')">CA</li>
+                  <li onclick="sub(0,'CO')">CO</li>
+                  <li onclick="sub(0,'CT')">CT</li>
+                  <li onclick="sub(0,'FL')">FL</li>
+                  <li onclick="sub(0,'GA')">GA</li>
+                  <li onclick="sub(0,'ID')">ID</li>
+                  <li onclick="sub(0,'IL')">IL</li>
+                  <li onclick="sub(0,'IN')">IN</li>
+                  <li onclick="sub(0,'IA')">IA</li>
+                  <li onclick="sub(0,'KS')">KS</li>
+                  <li onclick="sub(0,'KY')">KY</li>
+                  <li onclick="sub(0,'LA')">LA</li>
+                  <li onclick="sub(0,'ME')">ME</li>
+                  <li onclick="sub(0,'MD')">MD</li>
+                  <li onclick="sub(0,'MA')">MA</li>
+                  <li onclick="sub(0,'MI')">MI</li>
+                  <li onclick="sub(0,'MN')">MN</li>
+                  <li onclick="sub(0,'MS')">MS</li>
+                  <li onclick="sub(0,'MO')">MO</li>
+                  <li onclick="sub(0,'MT')">MT</li>
+                  <li onclick="sub(0,'NE')">NE</li>
+                  <li onclick="sub(0,'NV')">NV</li>
+                  <li onclick="sub(0,'NH')">NH</li>
+                  <li onclick="sub(0,'NJ')">NJ</li>
+                  <li onclick="sub(0,'NM')">NM</li>
+                  <li onclick="sub(0,'NY')">NY</li>
+                  <li onclick="sub(0,'NC')">NC</li>
+                  <li onclick="sub(0,'ND')">ND</li>
+                  <li onclick="sub(0,'OH')">OH</li>
+                  <li onclick="sub(0,'OK')">OK</li>
+                  <li onclick="sub(0,'OR')">OR</li>
+                  <li onclick="sub(0,'PA')">PA</li>
+                  <li onclick="sub(0,'RI')">RI</li>
+                  <li onclick="sub(0,'SC')">SC</li>
+                  <li onclick="sub(0,'SD')">SD</li>
+                  <li onclick="sub(0,'TN')">TN</li>
+                  <li onclick="sub(0,'UT')">TX</li>
+                  <li onclick="sub(0,'VT')">VT</li>
+                  <li onclick="sub(0,'VA')">VA</li>
+                  <li onclick="sub(0,'WA')">WA</li>
+                  <li onclick="sub(0,'WV')">WV</li>
+                  <li onclick="sub(0,'WY')">WY</li>
+                 
+              </ul>
+          </div>
+          <hr>
+          <div id="subblock">
+          </div>
+        </nav>
+    <div id="map" class="section"></div>
+    <footer>
+        Copyright  by  Liuqing_Yang
+    </footer>
+     <%-- <iframe style="width:0;height:0;" name="myFrame" src="about:blank"></iframe> --%>
+       <form name="myform" id="form1" action="gethashtags.gethts" method="post" )">
+ 	  <input  type="hidden" id="001" name="statename" value="">
+ 	  </form>
+	
+
+    <script>
+        
+function submitform1(st){
+	document.getElementById("001").value=st;
+    document.getElementById("form1").submit();
+}
+function sub(n,st){
+    switch(n){
+        case 0:var temp=[];
+        submitform1(st);
+        //get top 5 hashtag from cassandra
+        //hashtag[0]=request.getAttribute("hashtags");
+        //var hashtag=hashtags.split("_");
+        //for ( i=0;i<5;i++){
+        //    temp.push('<br><button onclick="initMap(0,"'+hashtag[i]+'")">'+(i+1).toString()+'.'+hashtag[i]+'</button>');
+        //}
+        //initMap(0,hashtag);
+        //var str=hashtag;
+        //document.getElementById("subblock").innerHTML=str;
+       
+         break;
+        case 1: var str='<h>Most popular hashtag around you</h><br><button onclick="initMap(0,"")">1.UCR</button>';
+        document.getElementById("subblock").innerHTML=str;
+        break;
+    }
+   
+}
+var map, heatmap;
+
+function initMap(n,hashtag) {
+    var latlng = new google.maps.LatLng(37.775, -122.434);
+  map = new google.maps.Map(document.getElementById('map'), {
+    zoom: 4,
+    center: {lat: 39.068832, lng: -98.511872},
+    mapTypeId: google.maps.MapTypeId.MAP
+  });
+  switch (n){
+      case 1:
+            //get hashtags per state statename[i] hashtag1[i]
+            var contentString;
+            for (i=1;i<46;i++){
+             contentString = '<div style="width:100px;"><button onclick="sub(0,"'+satename[i]+'")">'+statename[i]+'</button><br><p>1.'+hashtag1[i]+'</p></div>';
+             var infowindow = new google.maps.InfoWindow({map:map,position:latlng[i],content: contentString});
+            }
+      
+      break;
+      case 2: var infoWindow = new google.maps.InfoWindow({map: map});
+      
+      // Try HTML5 geolocation.
+      if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(function(position) {
+                                                   var pos = {
+                                                   lat: position.coords.latitude,
+                                                   lng: position.coords.longitude
+                                                   };
+                                                   
+                                                   infoWindow.setPosition(pos);
+                                                   infoWindow.setContent('Your Location.');
+                                                   var marker = new google.maps.Marker({map: map,position: pos});
+                                                   map.setCenter(pos);
+                                                   }, function() {
+                                                   handleLocationError(true, infoWindow, map.getCenter());
+                                                   });
+                                                   
+                                                   
+                                                   google.maps.event.addListener(map, 'click', function(event) {
+                                                                                 addinfo(event.latLng, map);
+                                                                                 });
+
+
+      } else {
+          // Browser doesn't support Geolocation
+          handleLocationError(false, infoWindow, map.getCenter());
+      }
+      break;
+
+      }
+  
+}
+    var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    var labelIndex = 0;
+    function addinfo(location, map) {
+        var contentString = labels[labelIndex++ % labels.length];
+        var infoWindow = new google.maps.InfoWindow({map: map});
+        infoWindow.setPosition(location);
+        infoWindow.setContent(contentString);
+        
+    }
+
+function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+    infoWindow.setPosition(pos);
+    infoWindow.setContent(browserHasGeolocation ?
+                          'Error: The Geolocation service failed.' :
+                          'Error: Your browser doesn\'t support geolocation.');
+}
+
+
+function heatmap0(geos){
+	 heatmap = new google.maps.visualization.HeatmapLayer({data: getPoints(geos),map: map});
+}
+// Heatmap data: 500 Points
+function getPoints(geos) {
+	alert(geos);
+    var points=[];
+   //submitform2(hashtag);
+   <%--var geos=<%=(ArrayList)request.getAttribute("locations")%>;
+   --%>
+   //get hashtag's lat and lon from cassandra
+    <%-- List<String> hash=(List<String>)request.getAttribute("locations");--%>
+    var i;
+    for(i=0;i<geos.length;i++){  	
+    	var geo=geos[i].split(" ");
+        points.push(new google.maps.LatLng(parseFloat(geos[0]),parseFloat(geos[1])));
+    }
+    return points;
+    }
+
+    </script>
+    <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBaIANGzsDAXutlxPbRKg24Q6Av89sfEWw&signed_in=true&libraries=visualization&callback=initMap">
+    </script>
+  </body>
+</html>
